@@ -14,10 +14,14 @@ spring:
       ddl-auto: update
     show-sql: true
 
-
 application:
   security: 
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
       issuer: expense-portal
-      expiration: 86400000 # onde day in miliseconds
+      expiration: 86400000 # onde day in milliseconds
+  erp-integration:
+    endpoints:
+      register-person: http://localhost:8080/erp/person
+      update-person: http://localhost:8080/erp/person/
+      register-expense: http://localhost:8080/erp/expense

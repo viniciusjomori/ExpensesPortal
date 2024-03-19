@@ -1,8 +1,10 @@
-package br.com.ExpensesPortal.entities;
+package br.com.ExpensesPortal.ERP_Mock;
 
+import br.com.ExpensesPortal.entities.BaseEntity;
+import br.com.ExpensesPortal.enums.ExpenseStatus;
+import br.com.ExpensesPortal.enums.UnitType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
@@ -10,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,28 +20,27 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-
-import br.com.ExpensesPortal.enums.ExpenseStatus;
-import br.com.ExpensesPortal.enums.UnitType;
-import br.com.ExpensesPortal.listeners.ExpenseListener;
+import java.util.UUID;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "mock_erp_expenses")
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(ExpenseListener.class)
-public class ExpenseEntity extends BaseEntity{
-    
+public class MockExpense extends BaseEntity {
+
+    @Column(unique = true, updatable = false, nullable = false)
+    private UUID idPortal;
+
     @ManyToOne
     @JoinColumn(name = "orderer_id", nullable = false)
-    private UserEntity orderer;
+    private MockPerson mockOrderer;
     
     @ManyToOne
     @JoinColumn(name = "approver_id", nullable = false)
-    private UserEntity approver;
+    private MockPerson mockApprover;
     
     @Column(nullable = false)
     private String productDesc;
@@ -60,8 +62,4 @@ public class ExpenseEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExpenseStatus expenseStatus;
-    
-    public double getTotalValue() {
-        return unitQnt * valuePerUnit;
-    }
 }

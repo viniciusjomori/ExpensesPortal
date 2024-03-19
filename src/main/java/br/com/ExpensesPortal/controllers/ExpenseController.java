@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ExpensesPortal.DTOs.requests.ExpenseRequestDTO;
 import br.com.ExpensesPortal.DTOs.responses.ExpenseResponseDTO;
+import br.com.ExpensesPortal.DTOs.responses.ResponseMessage;
 import br.com.ExpensesPortal.entities.ExpenseEntity;
 import br.com.ExpensesPortal.entities.UserEntity;
 import br.com.ExpensesPortal.enums.ExpenseStatus;
@@ -39,6 +41,9 @@ public class ExpenseController {
 
     @Autowired
     private ExpenseMapper expenseMapper;
+
+    @Autowired
+    private ResponseMessage responseMessage;
 
     @PostMapping
     @PreAuthorize("hasAuthority('REGISTER_EXPENSE')")
@@ -96,5 +101,14 @@ public class ExpenseController {
     @PreAuthorize("hasAuthority('REGISTER_EXPENSE')")
     public ResponseEntity<UnitType[]> findUnitTypes() {
         return ResponseEntity.ok(UnitType.values());
+    }
+
+    @PostMapping("{id}/notify_payment")
+    @PreAuthorize("hasAuthority('NOTIFY_PAYMENT')")
+    public ResponseEntity<ResponseMessage> notifyPayment(@PathVariable UUID id) {
+        expenseService.notifyPayment(id);
+        responseMessage.setMessage("Expense was payed");
+        responseMessage.setHttpStatus(HttpStatus.OK);
+        return ResponseEntity.ok(responseMessage);
     }
 }

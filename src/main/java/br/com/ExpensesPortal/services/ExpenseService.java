@@ -64,7 +64,7 @@ public class ExpenseService {
         ExpenseEntity expense = findById(id);
         if(currentUserIsApprover(expense)) {
             expense.setExpenseStatus(ExpenseStatus.WAITING_PAYMENT);
-            return expenseRepository.save(expense);
+            expenseRepository.save(expense);
         }   
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
@@ -76,6 +76,12 @@ public class ExpenseService {
             return expenseRepository.save(expense);
         }   
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+
+    public ExpenseEntity notifyPayment(UUID id) {
+        ExpenseEntity expense = findById(id);
+        expense.setExpenseStatus(ExpenseStatus.PAYED);
+        return expenseRepository.save(expense);
     }
 
     public Collection<ExpenseEntity> findAllByReference(ExpenseEntity reference) {

@@ -2,6 +2,7 @@ package br.com.ExpensesPortal.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import br.com.ExpensesPortal.enums.AccessName;
+import br.com.ExpensesPortal.listeners.UserListener;
 import br.com.ExpensesPortal.security.UserDetailsAdapter;
 
 import java.util.Collection;
@@ -26,6 +28,7 @@ import java.util.Collection;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(UserListener.class)
 public class UserEntity extends UserDetailsAdapter {
 
     @Column(unique = true, nullable = false)
