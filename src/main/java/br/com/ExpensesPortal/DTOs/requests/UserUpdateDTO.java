@@ -12,6 +12,6 @@ public record UserUpdateDTO(
     @NotBlank String cpf,
     @NotBlank String firstname,
     @NotBlank String lastname,
-    @NotBlank UUID roleId,
+    @NotNull UUID roleId,
     UUID approverId
 ) {}
