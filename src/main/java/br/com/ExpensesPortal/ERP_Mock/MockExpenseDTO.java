@@ -1,4 +1,4 @@
-package br.com.ExpensesPortal.integration.ERP.DTOs;
+package br.com.ExpensesPortal.ERP_Mock;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.UUID;
 import br.com.ExpensesPortal.enums.ExpenseStatus;
 import br.com.ExpensesPortal.enums.UnitType;
 
-public record ErpExpenseDTO(
+public record MockExpenseDTO(
     UUID idPortal,
     UUID ordererPortalId,
     UUID approverPortalId,

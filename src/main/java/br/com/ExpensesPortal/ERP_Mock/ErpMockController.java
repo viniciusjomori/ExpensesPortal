@@ -68,12 +68,15 @@ public class ErpMockController {
         }
     }
 
-    @PostMapping("/expense/approver/{approverId}/orderer/{ordererId}")
+    @PostMapping("/expense")
     @PermitAll
-    public ResponseEntity<ResponseMessage> registerExpense(@RequestBody MockExpense expense, @PathVariable UUID approverId, @PathVariable UUID ordererId) {
+    public ResponseEntity<ResponseMessage> registerExpense(@RequestBody MockExpenseDTO dto) {
         if(simulateConnection()) {
-            MockPerson approver = findByidPortal(approverId);
-            MockPerson orderer  = findByidPortal(ordererId);
+            MockPerson approver = findByidPortal(dto.ordererPortalId());
+            MockPerson orderer  = findByidPortal(dto.approverPortalId());
+
+            MockExpense expense = new MockExpense();
+            BeanUtils.copyProperties(dto, expense);
             expense.setMockApprover(approver);
             expense.setMockOrderer(orderer);
             expenseRepository.save(expense);

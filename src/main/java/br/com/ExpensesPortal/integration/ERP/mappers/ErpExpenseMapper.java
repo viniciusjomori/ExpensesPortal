@@ -13,6 +13,8 @@ import br.com.ExpensesPortal.integration.ERP.DTOs.ErpExpenseDTO;
 public interface ErpExpenseMapper {
     
     @Mapping(target = "idPortal", source = "id")
+    @Mapping(target = "ordererPortalId", source = "orderer.id")
+    @Mapping(target = "approverPortalId", source = "approver.id")
     ErpExpenseDTO toDTO(ExpenseEntity entity);
     Collection<ErpExpenseDTO> toDTO(Collection<ExpenseEntity> users);
 }
