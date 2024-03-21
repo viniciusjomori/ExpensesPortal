@@ -1,5 +1,6 @@
 package br.com.ExpensesPortal.services;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Function;
@@ -64,7 +65,8 @@ public class ExpenseService {
         ExpenseEntity expense = findById(id);
         if(currentUserIsApprover(expense)) {
             expense.setExpenseStatus(ExpenseStatus.WAITING_PAYMENT);
-            expenseRepository.save(expense);
+            expense.setApprovalDate(LocalDateTime.now());
+            return expenseRepository.save(expense);
         }   
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
