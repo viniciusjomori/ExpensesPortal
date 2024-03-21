@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,7 @@ import com.google.gson.Gson;
 
 import br.com.ExpensesPortal.DTOs.requests.HttpDTO;
 import br.com.ExpensesPortal.entities.BaseEntity;
-import br.com.ExpensesPortal.entities.ExpenseEntity;
 import br.com.ExpensesPortal.entities.RequestEntity;
-import br.com.ExpensesPortal.entities.UserEntity;
 import br.com.ExpensesPortal.enums.RequestStatus;
 import br.com.ExpensesPortal.enums.RequestType;
 import br.com.ExpensesPortal.repositories.RequestRepository;
@@ -33,34 +30,13 @@ public class RequestService {
     @Autowired
     private Gson gson;
 
-    @Value("${application.erp-integration.endpoints.register-person}")
-    private String requestToRegisterOrdererUrl;
-
-    @Value("${application.erp-integration.endpoints.update-person}")
-    private String requestToRegisterUpdateUrl;
-
-    @Value("${application.erp-integration.endpoints.register-expense}")
-    private String requestToRegisterExpenseUrl;
-
-    public void requestToRegisterOrderer(UserEntity user) {
-        createRequestEntity(user, HttpMethod.POST, requestToRegisterOrdererUrl, RequestType.REGISTER_ORDERER);
-    }
-
-    public void requestToUpdateOrderer(UserEntity user) {
-        createRequestEntity(user, HttpMethod.PUT, requestToRegisterUpdateUrl+user.getId(), RequestType.EDIT_ORDERER);
-    }
-
-    public void requestToRegisterExpense(ExpenseEntity expense) {
-        createRequestEntity(expense, HttpMethod.POST, requestToRegisterExpenseUrl, RequestType.REGISTER_EXPENSE);
-    }
-
-    private void createRequestEntity(BaseEntity entity, HttpMethod httpMethod, String url, RequestType requestType) {
-        String jsonEntity = gson.toJson(entity);
+    public void createRequestEntity(BaseEntity entity, Object body, HttpMethod httpMethod, String url, RequestType requestType) {
+        String json = gson.toJson(body);
         RequestEntity requestEntity = RequestEntity.builder()
             .httpMethod(httpMethod)
             .url(url)
             .entity(entity.getId())
-            .jsonEntity(jsonEntity)
+            .jsonEntity(json)
             .status(RequestStatus.PENDING)
             .requestType(requestType)
             .build();

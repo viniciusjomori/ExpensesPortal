@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import br.com.ExpensesPortal.entities.UserEntity;
-import br.com.ExpensesPortal.services.RequestService;
+import br.com.ExpensesPortal.integration.ERP.services.ErpUserService;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
@@ -14,21 +14,21 @@ import jakarta.persistence.PreUpdate;
 @Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 public class UserListener {
 
-    private static RequestService requestService;
+    private static ErpUserService erpUserService;
 
     @Autowired
-    public void init(RequestService requestService) {
-        UserListener.requestService = requestService;
+    public void init(ErpUserService erpUserService) {
+        UserListener.erpUserService = erpUserService;
     }
     
     @PrePersist
     public void onPersist(UserEntity user) {
-        requestService.requestToRegisterOrderer(user);
+        erpUserService.requestToRegisterOrderer(user);
     }
 
     @PreUpdate
     public void onUpdate(UserEntity user) {
-        requestService.requestToUpdateOrderer(user);
+        erpUserService.requestToUpdateOrderer(user);
     }
 
 }
