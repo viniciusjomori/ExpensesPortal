@@ -23,7 +23,7 @@ public class RequestUtil {
 
         // Adiciona o cabeçalho Authorization se um token foi fornecido
         if (token != null && !token.isEmpty()) {
-            conn.setRequestProperty("Authorization", token);
+            conn.setRequestProperty("Authorization", "Bearer "+token);
         }
 
         if (data != null) {

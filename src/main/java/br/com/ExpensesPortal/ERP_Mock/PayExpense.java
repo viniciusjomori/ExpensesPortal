@@ -30,26 +30,29 @@ public class PayExpense {
 
     private String token;
     
-    @Scheduled(fixedRate = (1000 * 60 * 60 * 3)) // 3 hours
+    @Scheduled(fixedRate = (1000 * 60 * 2)) // 2 minutes
     public void payExpense() {
+        if(token == null) login();
+
         Collection<MockExpense> expenses = expenseRepository.findAllByExpenseStatus(ExpenseStatus.WAITING_PAYMENT);
         expenses.forEach(e -> {
             e.setExpenseStatus(ExpenseStatus.PAYED);
             expenseRepository.save(e);
             try {
-                requestUtil.request(
-                    "http://localhost:8080/expense/"+e.getId()+"/notify_payment",
+                HttpDTO httpDTO = requestUtil.request(
+                    "http://localhost:8080/expense/"+e.getIdPortal()+"/notify_payment",
                     HttpMethod.POST,
                     null,
-                    null
+                    token
                 );
+                System.out.println(httpDTO.toString());
             } catch(IOException ex) {
                 ex.printStackTrace();
             }
         });
     }
 
-    @Scheduled(fixedRate = (1000 * 60 * 60 * 2)) // 2 hours
+    @Scheduled(fixedDelay = (1000 * 60 * 10)) // 10 minutes
     public void login() {
         LoginRequestDTO login = new LoginRequestDTO("erp.test@email.com", "password");
         String loginJson = gson.toJson(login);
