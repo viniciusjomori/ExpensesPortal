@@ -27,10 +27,10 @@ public class RequestUtil {
         }
 
         if (data != null) {
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setDoOutput(true);
             try (OutputStream os = conn.getOutputStream()) {
-                os.write(data.getBytes(), 0, data.length());
+                os.write(data.getBytes("UTF-8"));
             }
         }
 
