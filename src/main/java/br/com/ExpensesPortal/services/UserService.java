@@ -2,6 +2,7 @@ package br.com.ExpensesPortal.services;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,13 @@ public class UserService {
 
     @Autowired
     private UserMapper mapper;
+
+    private ExpenseService expenseService;
+
+    @Autowired // circular dependecy injection
+    public UserService(@Lazy ExpenseService expenseService) {
+        this.expenseService = expenseService;
+    }
 
     public Collection<UserEntity> findAll() {
         return userRepository.findAll();
@@ -86,18 +94,18 @@ public class UserService {
 
         UserEntity user = findById(id);
 
-        UserEntity approver = null;
-        if(dto.approverId() != null) {
+        UserEntity approver = user.getApprover();
+        if(dto.approverId() != null && !user.getApprover().getId().equals(dto.approverId())) {
             approver = findApproverById(dto.approverId());
-            // mudar aprovação de todas as despesas
+            expenseService.updateExpensesApprover(user, approver);
         }
 
         String password = user.getPassword();
         if(dto.password() != null)
             password = passwordEncoder.encode(dto.password());
-
+        
         RoleEntity role = roleService.findById(dto.roleId());
-
+        
         BeanUtils.copyProperties(dto, user);
         
         user.setPassword(password);

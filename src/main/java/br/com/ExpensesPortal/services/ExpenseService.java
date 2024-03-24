@@ -86,6 +86,20 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
+    public Collection<ExpenseEntity> updateExpensesApprover(UserEntity orderer, UserEntity approver) {
+        ExpenseEntity reference = ExpenseEntity.builder()
+            .active(true)
+            .expenseStatus(ExpenseStatus.PENDING)
+            .orderer(orderer)
+            .build();
+        Collection<ExpenseEntity> expenses = findAllByReference(reference);
+        System.out.println(expenses.size());
+        expenses.forEach(e -> {
+            e.setApprover(approver);
+        });
+        return expenseRepository.saveAll(expenses);
+    }
+
     public Collection<ExpenseEntity> findAllByReference(ExpenseEntity reference) {
         ExampleMatcher matcher = ExampleMatcher.matching()
             .withIgnoreNullValues();
